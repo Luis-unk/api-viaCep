@@ -1,5 +1,5 @@
-import { Button, StyleSheet, Text, View, TextInput, Image, Alert, TouchableOpacity} from "react-native";
-import { useState, useEffect } from "react";
+import { StyleSheet, Text, View, TextInput, Image, Alert, TouchableOpacity, Keyboard} from "react-native";
+import { useState } from "react";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ApiCep from "./src/service/api";
 
@@ -12,6 +12,7 @@ export default function App() {
   const [ddd, setDdd] = useState("")
   const [localidade, setLocalidade] = useState("")
   const [toggle, setToggle] = useState(false)
+  const [toggleBar, setToggleBar] = useState(false)
 
   const handlerClearCard = () => {
     setToggle(false)
@@ -21,6 +22,10 @@ export default function App() {
     setDdd("")
     setBairro("")
     setUf("")
+  }
+
+  const handlerNavBar = () => {
+    setToggleBar(false);
   }
 
 
@@ -38,6 +43,7 @@ export default function App() {
       setDdd(response.data.ddd)
       setLocalidade(response.data.localidade)
       setToggle(true)
+      Keyboard.dismiss()
     }catch(error){
       console.log("ERRO" + error)
       setToggle(false)
@@ -46,13 +52,26 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+
+{ 
+      toggleBar && (
+        <View>
+            <Text>Buscar</Text>
+            <Text>Recentes</Text>
+            <Text>Favoritos</Text>
+        </View>
+      )}
+
       <View style={styles.header}>
       <Image
       source={require("./assets/logo.png")}
       style={styles.image}/>
-      <Icon name="bars" size={25} marginLeft={75} marginTop={17}/>
+      <TouchableOpacity onPress={handlerNavBar}>
+        <Icon name="bars" size={25} marginLeft={75} marginTop={54}/>
+      </TouchableOpacity>
       </View>
 
+      
       <View style={styles.containerCep}>
       <Text style={styles.title}>CEP</Text>
       <TextInput placeholder="00.000-000" style={styles.inputText}
@@ -98,15 +117,15 @@ const styles = StyleSheet.create({
     fontFamily: "arial",
   },
   containerCep: {
-    marginTop: 50,
+    marginTop: 100,
     alignItems:"center",
     backgroundColor: "#fff",
     justifyContent: "center"
   },
 
   header: {
-    height: 70,
-    alignItems: "center",
+    marginTop: 8,
+    height: 100,
     justifyContent: "space-around",
     flexDirection: "row",
     backgroundColor: "#f6f3f3",
@@ -116,7 +135,10 @@ const styles = StyleSheet.create({
   divButttons: {
     display: "flex",
     flexDirection: "row",
-    margin: 10
+    alignItems: "center",
+    justifyContent: "center",
+    height: 120,
+    width: "100%"
   },
 
   buttonBuscar: {
@@ -124,7 +146,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     padding: 10,
     borderColor: "#000000", borderWidth: 1,
-    width: "60%",
+    width: "40%",
     height: 50,
     backgroundColor: "blue",
     borderRadius: 6
@@ -170,5 +192,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     fontSize: 40,
+  },
+  navBar: {
+    height: 500,
+    backgroundColor: "red",
+    width: 60,
   }
 });
